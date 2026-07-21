@@ -1,17 +1,21 @@
-const gameBoard = document.querySelector("#gameBoard");
-const boardCell = document.querySelector(".cell");
+const gameBoard = document.querySelector("#gameBoard") as HTMLElement;
+const gridSize = 15
+const totalCell = gridSize * gridSize
 
-if (!gameBoard || !boardCell) {
+if (!gameBoard) {
   throw new Error("Element not found in DOM!");
 }
 
-let gameBoardArea = Math.floor(gameBoard.clientHeight * gameBoard?.clientWidth)
-let boardCellArea = Math.floor(boardCell.clientHeight * boardCell?.clientWidth);
-let cellCount = Math.floor(gameBoardArea / boardCellArea)
+gameBoard.style.gridTemplateColumns = `repeat(${gridSize}, 1fr)`;
+gameBoard.style.gridTemplateRows = `repeat(${gridSize}, 1fr)`;
 
-for(let i = 0; i < cellCount; i++) {
+const fragment = document.createDocumentFragment();
+
+for(let i = 0; i < totalCell; i++) {
     const singleCell = document.createElement("div");
     singleCell.classList.add("cell");
 
-    gameBoard.appendChild(singleCell);
+    fragment.appendChild(singleCell);
 }
+ 
+gameBoard.appendChild(fragment)
