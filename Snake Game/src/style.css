@@ -1,0 +1,153 @@
+:root {
+  --primary-bg: #0d0d0d; /* Deep dark/black */
+  --outer-border: #e0e0e0; /* Light gray (for game board container) */
+  --grid-lines: rgba(255, 255, 255, 0.1); /* Faint gray for grid lines */
+  --score-card-bg: #000000; /* Pitch black */
+  --score-card-border: #2f2f2f; /* White */
+  --text-color: #ffffff; /* Crisp white */
+  --snake-body: #ffffff; /* Solid white */
+  --food-item: #ff6b6b; /* Soft muted red/pink */
+  --header-card-border-radius: 12px;
+  --game-border-radius: 8px; /* Slightly adjusted for visual balance */
+  --cell-border-color: #222222; /* Thin gray/dark border for cells */
+}
+
+body {
+  background-color: var(--primary-bg);
+  color: var(--text-color);
+  font-family: "Press Start 2P", monospace, sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  margin: 0;
+  overflow-y: auto;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.outer-container {
+  border: 2px solid var(--score-card-border); /* White border for the main container */
+  border-radius: var(--game-border-radius);
+  padding: 20px;
+  background-color: var(--primary-bg);
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 600px;
+  box-sizing: border-box;
+}
+
+.top-header {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  padding: 0 10px;
+  box-sizing: border-box;
+  flex-wrap: wrap; /* Allows badges to wrap on smaller screens */
+  gap: 10px; /* Adds space between wrapped badges */
+}
+
+.header-card {
+  background-color: var(--score-card-bg);
+  border: 1px solid var(--score-card-border); /* Thin white border */
+  border-radius: var(--header-card-border-radius);
+  padding: 10px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7em; /* Slightly smaller font for badges */
+  white-space: nowrap;
+  box-shadow: inset 0 0 0 0px var(--score-card-border); /* Removed unnecessary inset shadow for flat look */
+  flex: 1; /* Allows badges to grow and shrink */
+  min-width: 100px; /* Minimum width for each badge */
+  text-align: center;
+  text-transform: uppercase; /* Optional: for a more retro feel */
+}
+
+.game-board-container {
+  position: relative;
+  border: 2px solid var(--score-card-border); /* White outer border for the game board */
+  border-radius: var(--game-border-radius);
+  background-color: var(
+    --score-card-bg
+  ); /* Pitch black background for the grid container */
+  overflow: hidden;
+  display: inline-block;
+  width: 100%;
+  /* The grid cells themselves will form the visual grid lines */
+  background-image: none; /* Removing original grid background */
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); /* Subtle shadow for depth */
+}
+.game-board {
+  display: grid;
+  /* 15 col x 15 row - grid cell-gula nijer dynamic size auto share korbe */
+  grid-template-columns: repeat(15, 1fr);
+  grid-template-rows: repeat(15, 1fr);
+  width: 100%;
+  aspect-ratio: 1; /* Pura board ta square thakbe */
+  border: 2px solid #2f2f2f;
+  background-color: #000000;
+}
+
+.cell {
+  width: 100%;
+  aspect-ratio: 1; /* Prottekta cell 1:1 perfect square hobe */
+  border: 1px solid rgba(255, 255, 255, 0.1); /* Subtle grid line */
+  box-sizing: border-box;
+}
+
+/* Future class-gula dynamic JS/TS injection-er jonno ready rakhbi */
+.cell.snake {
+  background-color: #ffffff;
+}
+
+.cell.food {
+  background-color: #ff6b6b;
+}
+
+@import url("https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap");
+
+/* Media Queries for Responsive Adjustments */
+@media (max-width: 480px) {
+  body {
+    padding: 10px; /* Less padding on very small screens */
+  }
+  .header-card {
+    font-size: 0.6em;
+    padding: 8px 15px;
+    width: 100%; /* Make badges take full width when wrapped */
+    min-width: unset; /* Remove min-width when full width */
+  }
+  .outer-container {
+    padding: 15px;
+  }
+  .top-header {
+    margin-bottom: 15px;
+  }
+  .game-board-container {
+    border-radius: 6px; /* Slightly smaller radius on small screens */
+  }
+}
+
+@media (max-height: 600px) {
+  .outer-container {
+    margin-top: auto;
+    margin-bottom: auto;
+    max-height: calc(100vh - 40px);
+    overflow-y: auto;
+  }
+  .top-header {
+    flex-direction: column; /* Stack badges vertically */
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  .header-card {
+    width: 80%; /* Make stacked badges 80% width */
+    min-width: unset; /* Remove min-width when full width */
+    margin-bottom: 5px; /* Space between stacked badges */
+  }
+}
