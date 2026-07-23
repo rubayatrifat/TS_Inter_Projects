@@ -17,7 +17,8 @@ function getElement<T extends HTMLElement>(selector: string): T {
 // *** 3. CONSTANTS & CONFIGURATIONS ***
 
 const gridCellCount = 15;
-let snakeDirection = "ArrowDown" as Direction;
+let snakeDirection: Direction = "ArrowDown";
+let lastExecutedDirection: Direction = "ArrowDown";
 
 // *** 4. DOM TARGETS & GLOBAL STATE ***
 const gameBoard = getElement<HTMLDivElement>("#gameBoard");
@@ -25,7 +26,11 @@ const cellCoordinate: Record<string, HTMLDivElement> = {};
 const cellsFragment = document.createDocumentFragment();
 
 // State
-const snake: snakeInter[] = [{ x: 5, y: 3 }];
+const snake: snakeInter[] = [
+  { x: 5, y: 3 },
+  { x: 6, y: 3 },
+  { x: 7, y: 3 }
+];
 
 // *** 5. DOM INITIALIZATION & RENDER LOGIC ***
 gameBoard.style.gridTemplateColumns = `repeat(${gridCellCount}, 1fr)`;
@@ -36,7 +41,6 @@ for (let row = 0; row < gridCellCount; row++) {
   for (let column = 0; column < gridCellCount; column++) {
     const singleCell = document.createElement("div");
     singleCell.classList.add("cell");
-    singleCell.textContent = `${row}-${column}`;
     cellCoordinate[`${row}-${column}`] = singleCell;
     cellsFragment.appendChild(singleCell);
   }
@@ -55,6 +59,28 @@ function renderSnake(snakeSegments: snakeInter[]) {
     }
   });
 }
+
+// Navigating the snake
+function snakeNavigation() {
+  window.addEventListener("keydown", (evt) => {
+    switch (evt.key) {
+      case "ArrowUp":
+        if (lastExecutedDirection !== "ArrowDown") snakeDirection = "ArrowUp";
+        break;
+      case "ArrowDown":
+        if (lastExecutedDirection !== "ArrowUp") snakeDirection = "ArrowDown";
+        break;
+      case "ArrowLeft":
+        if (lastExecutedDirection !== "ArrowRight") snakeDirection = "ArrowLeft";
+        break;
+      case "ArrowRight":
+        if (lastExecutedDirection !== "ArrowLeft") snakeDirection = "ArrowRight";
+        break;
+    }
+  });
+}
+
+snakeNavigation();
 
 // Move the snake
 const snakeMovement = setInterval(() => {
@@ -80,7 +106,7 @@ const snakeMovement = setInterval(() => {
     }
 
     snake.unshift({
-      x: snakeHead.x + dx,   
+      x: snakeHead.x + dx,
       y: snakeHead.y + dy,
     });
     const snakeTail = snake.pop();
@@ -90,8 +116,9 @@ const snakeMovement = setInterval(() => {
     }
   }
 
+  lastExecutedDirection = snakeDirection;
   renderSnake(snake);
-}, 400);
+}, 300);
 
 // *** 7. INITIAL EXECUTION ***
 renderSnake(snake);
