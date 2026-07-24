@@ -15,10 +15,9 @@ function getElement<T extends HTMLElement>(selector: string): T {
 }
 
 // *** 3. CONSTANTS & CONFIGURATIONS ***
-
 const gridCellCount = 15;
-let snakeDirection: Direction = "ArrowDown";
-let lastExecutedDirection: Direction = "ArrowDown";
+let snakeDirection: Direction = "ArrowRight";
+let lastExecutedDirection: Direction = "ArrowRight";
 
 // *** 4. DOM TARGETS & GLOBAL STATE ***
 const gameBoard = getElement<HTMLDivElement>("#gameBoard");
@@ -29,7 +28,7 @@ const cellsFragment = document.createDocumentFragment();
 const snake: snakeInter[] = [
   { x: 5, y: 3 },
   { x: 6, y: 3 },
-  { x: 7, y: 3 }
+  { x: 7, y: 3 },
 ];
 
 // *** 5. DOM INITIALIZATION & RENDER LOGIC ***
@@ -48,7 +47,6 @@ for (let row = 0; row < gridCellCount; row++) {
 gameBoard.appendChild(cellsFragment);
 
 // *** 6. GAME LOGIC FUNCTIONS ***
-
 // Render Snake
 function renderSnake(snakeSegments: snakeInter[]) {
   snakeSegments.forEach((segment) => {
@@ -71,10 +69,12 @@ function snakeNavigation() {
         if (lastExecutedDirection !== "ArrowUp") snakeDirection = "ArrowDown";
         break;
       case "ArrowLeft":
-        if (lastExecutedDirection !== "ArrowRight") snakeDirection = "ArrowLeft";
+        if (lastExecutedDirection !== "ArrowRight")
+          snakeDirection = "ArrowLeft";
         break;
       case "ArrowRight":
-        if (lastExecutedDirection !== "ArrowLeft") snakeDirection = "ArrowRight";
+        if (lastExecutedDirection !== "ArrowLeft")
+          snakeDirection = "ArrowRight";
         break;
     }
   });
@@ -82,13 +82,26 @@ function snakeNavigation() {
 
 snakeNavigation();
 
+// Checking if game is over
+function checkGameOver(snakeHeadX: number, snakeHeadY: number) {
+  if (snakeHeadX < 0 || snakeHeadX > 14) {
+    alert("Game is Over");
+    clearTimeout(snakeMovement);
+  }
+  if (snakeHeadY < 0 || snakeHeadY > 14) {
+    alert("Game is Over");
+    clearTimeout(snakeMovement);
+  }
+}
+
 // Move the snake
 const snakeMovement = setInterval(() => {
   const snakeHead = snake[0];
-
   if (snake.length > 0 && snakeHead) {
     let dx = 0;
     let dy = 0;
+    let snakeHeadPosX = snakeHead.x;
+    let snakeHeadPosY = snakeHead.y;
 
     switch (snakeDirection) {
       case "ArrowUp":
@@ -109,11 +122,18 @@ const snakeMovement = setInterval(() => {
       x: snakeHead.x + dx,
       y: snakeHead.y + dy,
     });
+
     const snakeTail = snake.pop();
+
+    snakeHeadPosX += dx;
+    snakeHeadPosY += dy;
+
     if (snakeTail) {
       const tailPos = `${snakeTail.y}-${snakeTail.x}`;
       cellCoordinate[tailPos]?.classList.remove("snake");
     }
+
+    checkGameOver(snakeHeadPosX, snakeHeadPosY);
   }
 
   lastExecutedDirection = snakeDirection;
